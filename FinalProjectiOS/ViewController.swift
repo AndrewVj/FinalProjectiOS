@@ -24,13 +24,14 @@ struct ApiResponse : Codable {
 }
 
 
+
 class ViewController: UIViewController {
     @IBOutlet weak var emailAddress: UITextField!
     @IBOutlet weak var password: UITextField!
     @IBOutlet weak var emailLabel: UILabel!
     @IBOutlet weak var passwordLabel: UILabel!
-    let baseUrl = "https://api.airtable.com/v0/appVSEpL2J0yCcuvG"
-    let apiToken =  "Bearer keylEUbJyvrvQ9LLS"
+
+    
 //    keylEUbJyvrvQ9LLS
     var isDataLoading = false
     override func viewDidLoad() {
@@ -71,11 +72,11 @@ class ViewController: UIViewController {
         let passwordText = String(password.text!)
 
         //Make api call
-        let apiUrl = "https://api.airtable.com/v0/appVSEpL2J0yCcuvG/Users?filterByFormula=AND(({email}='"+emailText+"'),({password}='"+passwordText+"'))"
+        let apiUrl = Constants.apiUrl + "/Users?filterByFormula=AND(({email}='"+emailText+"'),({password}='"+passwordText+"'))"
  
         var request = URLRequest(url: URL(string: apiUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)!,timeoutInterval: Double.infinity)
 
-        request.addValue(apiToken, forHTTPHeaderField: "Authorization")
+        request.addValue(Constants.apiKey, forHTTPHeaderField: "Authorization")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("brw=brwD8OHuk7iMnJBzj", forHTTPHeaderField: "Cookie")
         sender.setTitle("Loading ...", for: .normal)
@@ -114,6 +115,10 @@ class ViewController: UIViewController {
         
     }
     
+
+    //    @IBAction func didTapSignup(_sender: UIButton){
+//        present(RegisterViewController, animated: true)
+//    }
     
 }
 
