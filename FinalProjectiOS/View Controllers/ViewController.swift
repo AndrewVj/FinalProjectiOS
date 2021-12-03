@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct Field:Codable {
+struct Field: Codable {
     let email: String
     let password: String
     let name: String
@@ -99,6 +99,12 @@ class ViewController: UIViewController {
                  
                     return
                 }
+                
+                let currentUser: User = User()
+                currentUser.email = apiResponse.records[0].fields.email
+                currentUser.name = apiResponse.records[0].fields.name
+                currentUser.id = apiResponse.records[0].id
+                
                 
             }catch let jsonError {
                 print(jsonError)
