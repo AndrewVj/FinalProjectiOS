@@ -16,6 +16,8 @@
 		25BAB13E2759386500A5A18E /* CreateListingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25BAB13D2759386500A5A18E /* CreateListingViewController.swift */; };
 		25BAB140275938B300A5A18E /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25BAB13F275938B300A5A18E /* UserDetailViewController.swift */; };
 		25BAB14227593D9300A5A18E /* MyListingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25BAB14127593D9300A5A18E /* MyListingsTableViewController.swift */; };
+		25C26F85275A874600020561 /* UserEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C26F84275A874600020561 /* UserEditViewController.swift */; };
+		25E13E0A275B016400FE81CB /* AllListingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E13E09275B016400FE81CB /* AllListingsTableViewCell.swift */; };
 		25EDDEE52754513B00980553 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25EDDEE42754513B00980553 /* AppDelegate.swift */; };
 		25EDDEE72754513B00980553 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25EDDEE62754513B00980553 /* SceneDelegate.swift */; };
 		25EDDEE92754513B00980553 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25EDDEE82754513B00980553 /* ViewController.swift */; };
@@ -38,6 +40,8 @@
 		25BAB13D2759386500A5A18E /* CreateListingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateListingViewController.swift; sourceTree = "<group>"; };
 		25BAB13F275938B300A5A18E /* UserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
 		25BAB14127593D9300A5A18E /* MyListingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyListingsTableViewController.swift; sourceTree = "<group>"; };
+		25C26F84275A874600020561 /* UserEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEditViewController.swift; sourceTree = "<group>"; };
+		25E13E09275B016400FE81CB /* AllListingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllListingsTableViewCell.swift; sourceTree = "<group>"; };
 		25EDDEE12754513B00980553 /* FinalProjectiOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinalProjectiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25EDDEE42754513B00980553 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		25EDDEE62754513B00980553 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -118,6 +122,8 @@
 				25BAB13D2759386500A5A18E /* CreateListingViewController.swift */,
 				25BAB13F275938B300A5A18E /* UserDetailViewController.swift */,
 				25BAB14127593D9300A5A18E /* MyListingsTableViewController.swift */,
+				25C26F84275A874600020561 /* UserEditViewController.swift */,
+				25E13E09275B016400FE81CB /* AllListingsTableViewCell.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -193,6 +199,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25E13E0A275B016400FE81CB /* AllListingsTableViewCell.swift in Sources */,
 				25EDDEEF2754513B00980553 /* FinalProjectiOS.xcdatamodeld in Sources */,
 				25BAB134275911FB00A5A18E /* Listing.swift in Sources */,
 				25BAB13C2759380D00A5A18E /* ListingDetailsViewController.swift in Sources */,
@@ -207,6 +214,7 @@
 				25BAB1312759117100A5A18E /* User.swift in Sources */,
 				25BAB140275938B300A5A18E /* UserDetailViewController.swift in Sources */,
 				25EDDEE72754513B00980553 /* SceneDelegate.swift in Sources */,
+				25C26F85275A874600020561 /* UserEditViewController.swift in Sources */,
 				F9DB3BCF2756AB01006E68AD /* Constants.swift in Sources */,
 				F9DB3BD12756B79E006E68AD /* Toast.swift in Sources */,
 			);

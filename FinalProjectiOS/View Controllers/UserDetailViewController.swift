@@ -9,13 +9,20 @@ import UIKit
 
 class UserDetailViewController: UIViewController {
 
+    @IBOutlet weak var emailidLabel: UILabel!
+    @IBOutlet weak var userNameLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
+    @IBAction func editUserDetail(_ sender: UIBarButtonItem) {
+    }
     
-
+    @IBAction func signOutButton(_ sender: UIButton) {
+    }
+    
     /*
     // MARK: - Navigation
 

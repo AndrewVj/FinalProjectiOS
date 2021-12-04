@@ -9,13 +9,23 @@ import UIKit
 
 class CreateListingViewController: UIViewController {
 
+    @IBOutlet weak var titleTextField: UITextField!
+    
+    @IBOutlet weak var facilitiesTextField: UITextField!
+    
+    @IBOutlet weak var locationTextField: UITextField!
+    
+    @IBOutlet weak var descriptionTextView: UITextView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
     
-
+    @IBAction func createListingButton(_ sender: Any) {
+    }
+    
     /*
     // MARK: - Navigation
 

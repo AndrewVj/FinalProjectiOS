@@ -1,19 +1,17 @@
 //
-//  ListingDetailsViewController.swift
+//  UserEditViewController.swift
 //  FinalProjectiOS
 //
-//  Created by Andrew Vijay on 02/12/21.
+//  Created by Andrew Vijay on 03/12/21.
 //
 
 import UIKit
 
-class ListingDetailsViewController: UIViewController {
+class UserEditViewController: UIViewController {
 
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var facilitiesLabel: UILabel!
-    @IBOutlet weak var locationLabel: UILabel!
-    @IBOutlet weak var listingImage: UIImageView!
-    @IBOutlet weak var descriptionTextView: UITextView!
+    @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var newPasswordTextField: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +20,8 @@ class ListingDetailsViewController: UIViewController {
     }
     
 
+    @IBAction func submitEditButton(_ sender: Any) {
+    }
     /*
     // MARK: - Navigation
 
