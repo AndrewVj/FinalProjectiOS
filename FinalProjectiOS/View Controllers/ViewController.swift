@@ -30,13 +30,37 @@ class ViewController: UIViewController {
     @IBOutlet weak var password: UITextField!
     @IBOutlet weak var emailLabel: UILabel!
     @IBOutlet weak var passwordLabel: UILabel!
-
+    @IBOutlet var  spinner: UIActivityIndicatorView!
+    var users : [User]?
     
-//    keylEUbJyvrvQ9LLS
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var isDataLoading = false
+    override func viewWillAppear(_ animated: Bool) {
+        DispatchQueue.main.async {
+            self.fetchUser()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+//        spinner.hidesWhenStopped = true
+
         // Do any additional setup after loading the view.
+    }
+    
+    func fetchUser(){
+        do{
+            self.users = try context.fetch(User.fetchRequest())
+            //Users already registered
+            if(self.users!.count > 0 ){
+                let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "tabbarMain")
+                vc.modalPresentationStyle = .fullScreen
+                navigationController?.present(vc, animated: true)
+            }
+        }catch {
+            
+        }
+
     }
 
     @IBAction func handleSignInClick(_ sender: UIButton) {
@@ -72,39 +96,56 @@ class ViewController: UIViewController {
         let passwordText = String(password.text!)
 
         //Make api call
-        let apiUrl = Constants.apiUrl + "/Users?filterByFormula=AND(({email}='"+emailText+"'),({password}='"+passwordText+"'))"
+        let apiUrl = Constants.apiUrl + "/User?filterByFormula=AND(({email}='"+emailText+"'),({password}='"+passwordText+"'))"
+        
  
         var request = URLRequest(url: URL(string: apiUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)!,timeoutInterval: Double.infinity)
 
         request.addValue(Constants.apiKey, forHTTPHeaderField: "Authorization")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("brw=brwD8OHuk7iMnJBzj", forHTTPHeaderField: "Cookie")
-        sender.setTitle("Loading ...", for: .normal)
+        spinner.startAnimating()
+    
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
           guard let data = data else {
-            print(String(describing: error))
             semaphore.signal()
             return
           }
             let jsonDecoder = JSONDecoder()
             do {
                 let apiResponse = try jsonDecoder.decode(ApiResponse.self,from: data)
-                //No users are found
-                if(apiResponse.records.count == 0) {
-                    semaphore.signal()
+
                     DispatchQueue.main.async {
-                        self.passwordLabel.text = "Email or password is incorrect"
-                        self.passwordLabel.isHidden = false
+                        self.spinner.stopAnimating()
+                        //No users are found
+                        if (apiResponse.records.count == 0 ){
+                            self.passwordLabel.text = "Email or password is incorrect"
+                            self.passwordLabel.isHidden = false
+                        }
+                        //Declare the user
+                        let currentUser  = User(context: self.context)
+                        currentUser.email = apiResponse.records[0].fields.email
+                        currentUser.name = apiResponse.records[0].fields.name
+                        currentUser.id = apiResponse.records[0].id
+
+                        do{
+                            try self.context.save()
+                            let vc = self.storyboard!.instantiateViewController(withIdentifier: "tabbarMain") as! UITabBarController
+                            vc.modalPresentationStyle = .fullScreen
+                            let navController = UINavigationController(rootViewController:vc) // Creating a navigation controller with VC1 at the root of the navigation stack.
+                            navController.modalPresentationStyle = .fullScreen
+                            self.present(navController, animated:true, completion: nil)
+
+                            print("Comes here")
+                        }catch let error{
+                            print("Unexpected error: \(error).")
+                        }
+                        
                     }
                  
-                    return
-                }
-                
-                let currentUser: User = User()
-                currentUser.email = apiResponse.records[0].fields.email
-                currentUser.name = apiResponse.records[0].fields.name
-                currentUser.id = apiResponse.records[0].id
-                
+           
+                semaphore.signal()
+
                 
             }catch let jsonError {
                 print(jsonError)
@@ -115,16 +156,7 @@ class ViewController: UIViewController {
     
         task.resume()
         semaphore.wait()
-        sender.setTitle("Sign In", for: .normal)
-
-
-        
     }
-    
 
-    //    @IBAction func didTapSignup(_sender: UIButton){
-//        present(RegisterViewController, animated: true)
-//    }
-    
 }
 

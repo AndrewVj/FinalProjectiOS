@@ -76,6 +76,7 @@ class RegisterViewController: UIViewController {
         
     
 
+        //Check if email exisits or not
         let _emailExist = checkIfEmailExist(email: emailText)
     
         if _emailExist {
@@ -83,6 +84,8 @@ class RegisterViewController: UIViewController {
             emailLabel.isHidden = false
             return
         }
+        
+        //If not email already exist create new user
         
         let semaphore = DispatchSemaphore (value: 0)
 
@@ -104,8 +107,12 @@ class RegisterViewController: UIViewController {
             return
           }
             DispatchQueue.main.async {
-                self.showToast("User registerd successfully !")
-                _ = self.navigationController?.popViewController(animated: true)
+                let alert = UIAlertController(title: "", message: "Registered successfully",preferredStyle: .alert)
+                  alert.addAction(UIAlertAction(title: "Ok",style: .default, handler: { (action) in
+                      _ = self.navigationController?.popViewController(animated: true)
+                  }))
+                  self.present(alert, animated: true)
+                
             }
           print(String(data: data, encoding: .utf8)!)
 
@@ -133,7 +140,6 @@ class RegisterViewController: UIViewController {
 
         request.addValue(Constants.apiKey, forHTTPHeaderField: "Authorization")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("brw=brwD8OHuk7iMnJBzj", forHTTPHeaderField: "Cookie")
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
           guard let data = data else {
             print(String(describing: error))

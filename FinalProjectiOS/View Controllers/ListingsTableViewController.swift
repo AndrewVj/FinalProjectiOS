@@ -7,89 +7,159 @@
 
 import UIKit
 
+struct AllListingApiResponse: Codable {
+    let records: [ListingRecord]
+}
+
+// MARK: - Record
+struct ListingRecord: Codable {
+    let id: String
+    let fields: ListingFields
+    let createdTime: String
+}
+
+// MARK: - Fields
+struct ListingFields: Codable {
+    let title, fieldsDescription, facilities, photos: String
+    let location: String
+    let user, emailFromUser, nameFromUser: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case title
+        case fieldsDescription = "description"
+        case facilities, photos, location, user
+        case emailFromUser = "email (from user)"
+        case nameFromUser = "name (from user)"
+    }
+}
+
+
 class ListingsTableViewController: UITableViewController {
+    //For getting data from core data
+    var users = [User]()
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
-    let listingTitles:[String] = ["2BHK Villa", "3BHK Villa", "1BHK Villa"]
-    let listingImages = [UIImage(named: "one"), UIImage(named: "two"), UIImage(named: "three")]
-    let listingLocations = ["Waterloo", "Toronto", "Brampton"]
+    
+    
+    
+    var listings =  [Listing]()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        fetchUser()
+       
+    }
+    
+    func fetchUser(){
+        do{
+            self.users = try context.fetch(User.fetchRequest())
+            if self.users.count > 0 {
+                let userEmail = users[0].email
+                self.loadDataFromApi(email:userEmail)
+            }
+     
+            
+        }catch {
+            
+        }
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
 
-    // MARK: - Table view data source
+    
 
     override func numberOfSections(in tableView: UITableView) -> Int {
+        
         // #warning Incomplete implementation, return the number of sections
         return 1
     }
+    
+    //Pass the listing details to another api
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if (self.listings.count > 0 ){
 
+            let listing = self.listings[indexPath.row]
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "ListingDetailView") as! ListingDetailsViewController
+            
+            vc.locatonText = listing.location
+            vc.titleText = listing.title
+            vc.facilitiesText = listing.facilities
+            vc.descriptionText = listing.description
+            vc.listingImageText = listing.image
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return listingTitles.count
+        return  self.listings.count
     }
 
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "AllListingsCell", for: indexPath) as! AllListingsTableViewCell
-        
-        cell.allListingsCellImageView.image = self.listingImages[indexPath.row]
-        cell.allListingsCellTitleLabel.text = self.listingTitles[indexPath.row]
-        cell.allListingsCellLocationLabel.text = self.listingLocations[indexPath.row]
-
+        if (self.listings.count > 0 ){
+            let listing = self.listings[indexPath.row]
+            let newImageData = Data.init(base64Encoded: listing.image, options: .init(rawValue: 0))
+            cell.imageItem.image = UIImage(data: newImageData!)
+            cell.facilityLabel.text = listing.facilities
+            cell.nameLabel.text = listing.title
+            cell.locationLabel.text = listing.location
+        }
         return cell
     }
-
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    
+    
+    
+    
+    //Loads all the listings from the api
+    func loadDataFromApi(email: String?){
+        guard let email = email else {
+            return
+        }
+        let semaphore = DispatchSemaphore (value: 0)
+        let url = Constants.apiUrl + "/Listing?filterByFormula=AND(({email (from user)}!='"+email+"'))"
+        var request = URLRequest(url: URL(string: url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)!,timeoutInterval: Double.infinity)
+        request.addValue(Constants.apiKey, forHTTPHeaderField: "Authorization")
+        request.httpMethod = "GET"
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+          guard let data = data else {
+            print(String(describing: error))
+            semaphore.signal()
+            return
+          }
+            let jsonDecoder = JSONDecoder()
+            do {
+                let apiResponse = try jsonDecoder.decode(AllListingApiResponse.self,from: data)
+                //No users are found
+                var listings =  [Listing]()
+                for record in apiResponse.records {
+                    let listing = Listing()
+                    listing.image = record.fields.photos
+                    listing.location = record.fields.location
+                    listing.description = record.fields.fieldsDescription
+                    listing.title = record.fields.title
+                    listing.facilities = record.fields.facilities
+                    listing.id = record.id
+                    listings += [listing]
+                    
+                }
+                self.listings = listings
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+    
+            }catch let jsonError {
+                print(jsonError)
+            }
+          semaphore.signal()
+        }
+        task.resume()
+        semaphore.wait()
     }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+    
 
 }

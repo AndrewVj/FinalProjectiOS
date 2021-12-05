@@ -9,10 +9,14 @@ import UIKit
 
 class AllListingsTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var allListingsCellTitleLabel: UILabel!
-    @IBOutlet weak var allListingsCellImageView: UIImageView!
-    @IBOutlet weak var allListingsCellLocationLabel: UILabel!
+
+    @IBOutlet var imageItem: UIImageView!
     
+    @IBOutlet var nameLabel: UILabel!
+    
+    @IBOutlet var  facilityLabel: UILabel!
+    
+    @IBOutlet var locationLabel: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -20,7 +24,6 @@ class AllListingsTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
         // Configure the view for the selected state
     }
 

@@ -8,10 +8,12 @@
 import Foundation
 
 class Listing: Codable {
+    var id: String = ""
     var title: String = ""
     var description: String = ""
     var facilities: String = ""
     var user_id: String = ""
+    var image: String = ""
     var location: String = ""
 //    var photos: [String]
 }

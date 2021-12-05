@@ -8,28 +8,28 @@
 import UIKit
 
 class ListingDetailsViewController: UIViewController {
-
+    var titleText = ""
+    var facilitiesText = ""
+    var locatonText = ""
+    var listingImageText = ""
+    var descriptionText = ""
+    
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var facilitiesLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var listingImage: UIImageView!
     @IBOutlet weak var descriptionTextView: UITextView!
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        titleLabel.text = titleText
+        facilitiesLabel.text = facilitiesText
+        locationLabel.text = locatonText
+        if listingImageText != ""{
+            let newImageData = Data.init(base64Encoded: listingImageText, options: .init(rawValue: 0))
+            listingImage.image = UIImage(data: newImageData!)
+        }
+        descriptionTextView.text = descriptionText
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
