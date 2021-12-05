@@ -26,43 +26,24 @@ struct ApiResponse : Codable {
 
 
 class ViewController: UIViewController {
+    //Outlet intliazaton
     @IBOutlet weak var emailAddress: UITextField!
     @IBOutlet weak var password: UITextField!
     @IBOutlet weak var emailLabel: UILabel!
     @IBOutlet weak var passwordLabel: UILabel!
     @IBOutlet var  spinner: UIActivityIndicatorView!
+    //For data loading
     var users : [User]?
-    
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+   
     var isDataLoading = false
-    override func viewWillAppear(_ animated: Bool) {
-        DispatchQueue.main.async {
-            self.fetchUser()
-        }
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        spinner.hidesWhenStopped = true
-
-        // Do any additional setup after loading the view.
+        spinner.hidesWhenStopped = true
     }
     
-    func fetchUser(){
-        do{
-            self.users = try context.fetch(User.fetchRequest())
-            //Users already registered
-            if(self.users!.count > 0 ){
-                let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "tabbarMain")
-                vc.modalPresentationStyle = .fullScreen
-                navigationController?.present(vc, animated: true)
-            }
-        }catch {
-            
-        }
-
-    }
-
+   
     @IBAction func handleSignInClick(_ sender: UIButton) {
    
         //Reset the values before validation

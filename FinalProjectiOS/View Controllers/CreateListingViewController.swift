@@ -144,7 +144,6 @@ class CreateListingViewController: UIViewController {
             return
         }
         request.httpBody = uploadData
-        print("Comes here")
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             
             if let httpResponse = response as? HTTPURLResponse{
@@ -154,7 +153,7 @@ class CreateListingViewController: UIViewController {
                 }
             }
             
-            guard let data = data else {
+            guard let _ = data else {
             semaphore.signal()
             return
            }

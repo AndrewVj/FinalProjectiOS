@@ -51,7 +51,6 @@ class UserDetailViewController: UIViewController {
     var users = [User]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         emailLabel.isHidden = true

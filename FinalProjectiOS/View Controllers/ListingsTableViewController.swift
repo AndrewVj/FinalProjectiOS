@@ -22,7 +22,7 @@ struct ListingRecord: Codable {
 struct ListingFields: Codable {
     let title, fieldsDescription, facilities, photos: String
     let location: String
-    let user, emailFromUser, nameFromUser: [String]
+    let user, emailFromUser, nameFromUser,favorite: [String]
 
     enum CodingKeys: String, CodingKey {
         case title
@@ -30,6 +30,7 @@ struct ListingFields: Codable {
         case facilities, photos, location, user
         case emailFromUser = "email (from user)"
         case nameFromUser = "name (from user)"
+        case favorite = "favorite"
     }
 }
 
@@ -38,9 +39,7 @@ class ListingsTableViewController: UITableViewController {
     //For getting data from core data
     var users = [User]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    
-    
+    var listingType = ""
     
     var listings =  [Listing]()
     
@@ -87,6 +86,8 @@ class ListingsTableViewController: UITableViewController {
             vc.facilitiesText = listing.facilities
             vc.descriptionText = listing.description
             vc.listingImageText = listing.image
+            vc.favorites = listing.favorite
+            vc.listingId = listing.id
             self.navigationController?.pushViewController(vc, animated: true)
         }
         
@@ -120,7 +121,19 @@ class ListingsTableViewController: UITableViewController {
             return
         }
         let semaphore = DispatchSemaphore (value: 0)
-        let url = Constants.apiUrl + "/Listing?filterByFormula=AND(({email (from user)}!='"+email+"'))"
+        var filterByFormula =  ""
+        switch listingType {
+           case "main":
+            filterByFormula = "AND(({email (from user)}!='"+email+"'))"
+           case "my" :
+               filterByFormula = "AND(({email (from user)}='"+email+"'))"
+           case "saved":
+               filterByFormula = "AND(({email (from favorite)}='"+email+"'))"
+           default:
+            return
+        }
+        let url = Constants.apiUrl + "/Listing?filterByFormula=" + filterByFormula
+        
         var request = URLRequest(url: URL(string: url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)!,timeoutInterval: Double.infinity)
         request.addValue(Constants.apiKey, forHTTPHeaderField: "Authorization")
         request.httpMethod = "GET"
@@ -144,6 +157,7 @@ class ListingsTableViewController: UITableViewController {
                     listing.title = record.fields.title
                     listing.facilities = record.fields.facilities
                     listing.id = record.id
+                    listing.favorite = record.fields.favorite
                     listings += [listing]
                     
                 }

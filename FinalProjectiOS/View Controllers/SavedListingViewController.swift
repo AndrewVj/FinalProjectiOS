@@ -1,5 +1,5 @@
 //
-//  AllMainListingViewController.swift
+//  SavedListingViewController.swift
 //  FinalProjectiOS
 //
 //  Created by ashok on 04/12/2021.
@@ -7,19 +7,21 @@
 
 import UIKit
 
-class AllMainListingViewController: UIViewController {
+class SavedListingViewController: UIViewController {
+
     
     override func viewWillAppear(_ animated: Bool) {
         let vc = storyboard?.instantiateViewController(withIdentifier: "AllListingsTableView") as! ListingsTableViewController
         vc.navigationItem.setHidesBackButton(true, animated: true)
-        vc.listingType = "main"
+        vc.navigationItem.title = "Saved listings"
+        vc.listingType = "saved"
         self.navigationController?.pushViewController(vc, animated: false)
         
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Do any additional setup after loading the view.
     }
 
 }
