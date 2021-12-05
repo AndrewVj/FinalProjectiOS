@@ -35,6 +35,7 @@ struct ListingFields: Codable {
 }
 
 
+
 class ListingsTableViewController: UITableViewController {
     //For getting data from core data
     var users = [User]()
@@ -55,7 +56,7 @@ class ListingsTableViewController: UITableViewController {
             self.users = try context.fetch(User.fetchRequest())
             if self.users.count > 0 {
                 let userEmail = users[0].email
-                self.loadDataFromApi(email:userEmail)
+                self.loadDataFromApi(email:userEmail,userId: users[0].id)
             }
      
             
@@ -68,9 +69,7 @@ class ListingsTableViewController: UITableViewController {
     
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        
-        // #warning Incomplete implementation, return the number of sections
-        return 1
+            return 1
     }
     
     //Pass the listing details to another api
@@ -116,23 +115,26 @@ class ListingsTableViewController: UITableViewController {
     
     
     //Loads all the listings from the api
-    func loadDataFromApi(email: String?){
+    func loadDataFromApi(email: String?,userId: String?){
         guard let email = email else {
+            return
+        }
+        guard let userId = userId else {
             return
         }
         let semaphore = DispatchSemaphore (value: 0)
         var filterByFormula =  ""
         switch listingType {
            case "main":
-            filterByFormula = "AND(({email (from user)}!='"+email+"'))"
+            filterByFormula = "?filterByFormula=AND(({email (from user)}!='"+email+"'))"
            case "my" :
-               filterByFormula = "AND(({email (from user)}='"+email+"'))"
+               filterByFormula = "?filterByFormula=AND(({email (from user)}='"+email+"'))"
            case "saved":
-               filterByFormula = "AND(({email (from favorite)}='"+email+"'))"
+              filterByFormula = ""
            default:
             return
         }
-        let url = Constants.apiUrl + "/Listing?filterByFormula=" + filterByFormula
+        let url = Constants.apiUrl + "/Listing" + filterByFormula
         
         var request = URLRequest(url: URL(string: url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)!,timeoutInterval: Double.infinity)
         request.addValue(Constants.apiKey, forHTTPHeaderField: "Authorization")
@@ -149,6 +151,7 @@ class ListingsTableViewController: UITableViewController {
                 let apiResponse = try jsonDecoder.decode(AllListingApiResponse.self,from: data)
                 //No users are found
                 var listings =  [Listing]()
+                print(apiResponse.records.count)
                 for record in apiResponse.records {
                     let listing = Listing()
                     listing.image = record.fields.photos
@@ -158,8 +161,22 @@ class ListingsTableViewController: UITableViewController {
                     listing.facilities = record.fields.facilities
                     listing.id = record.id
                     listing.favorite = record.fields.favorite
-                    listings += [listing]
                     
+                    if self.listingType == "saved" {
+                        var isFaviorite = false
+                        for favorite in record.fields.favorite {
+                            print(favorite,userId)
+                            if favorite == userId {
+                                isFaviorite = true
+                            }
+                        }
+                        if isFaviorite {
+                            listings += [listing]
+                        }
+                    }else{
+                        listings += [listing]
+                    }
+                
                 }
                 self.listings = listings
                 DispatchQueue.main.async {

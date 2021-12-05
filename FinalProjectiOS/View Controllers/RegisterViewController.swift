@@ -171,7 +171,12 @@ class RegisterViewController: UIViewController {
     
     
     @IBAction func didTabSignIn(_ sender: UIButton) {
-        _ = navigationController?.popViewController(animated: true)
+        let vc = self.storyboard!.instantiateViewController(withIdentifier: "signInStoryBoard") as! UIViewController
+        vc.modalPresentationStyle = .fullScreen
+        let navController = UINavigationController(rootViewController:vc)
+        // Creating a navigation controller with VC1 at the root of the navigation stack.
+        navController.modalPresentationStyle = .fullScreen
+        self.present(navController, animated:true, completion: nil)
     }
     
  

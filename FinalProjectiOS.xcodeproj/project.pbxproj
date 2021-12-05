@@ -21,6 +21,7 @@
 		25EDDEEF2754513B00980553 /* FinalProjectiOS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 25EDDEED2754513B00980553 /* FinalProjectiOS.xcdatamodeld */; };
 		25EDDEF12754513E00980553 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 25EDDEF02754513E00980553 /* Assets.xcassets */; };
 		25EDDEF42754513E00980553 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25EDDEF22754513E00980553 /* LaunchScreen.storyboard */; };
+		F92AAB7A275D4DA4005CD28D /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92AAB78275D4DA4005CD28D /* CommentTableViewCell.swift */; };
 		F96F3589275C6AA200223CE8 /* AllMainListingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96F3588275C6AA200223CE8 /* AllMainListingViewController.swift */; };
 		F96F358D275C780200223CE8 /* MyListingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96F358C275C780200223CE8 /* MyListingViewController.swift */; };
 		F96F358F275C783B00223CE8 /* SavedListingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F96F358E275C783B00223CE8 /* SavedListingViewController.swift */; };
@@ -48,6 +49,7 @@
 		25EDDEF02754513E00980553 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		25EDDEF32754513E00980553 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		25EDDEF52754513E00980553 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F92AAB78275D4DA4005CD28D /* CommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
 		F96F3588275C6AA200223CE8 /* AllMainListingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllMainListingViewController.swift; sourceTree = "<group>"; };
 		F96F358C275C780200223CE8 /* MyListingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyListingViewController.swift; sourceTree = "<group>"; };
 		F96F358E275C783B00223CE8 /* SavedListingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedListingViewController.swift; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 				F96F358C275C780200223CE8 /* MyListingViewController.swift */,
 				F96F358E275C783B00223CE8 /* SavedListingViewController.swift */,
 				F96F3590275C9AF500223CE8 /* RootViewController.swift */,
+				F92AAB78275D4DA4005CD28D /* CommentTableViewCell.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -209,6 +212,7 @@
 				F96F358D275C780200223CE8 /* MyListingViewController.swift in Sources */,
 				25BAB134275911FB00A5A18E /* Listing.swift in Sources */,
 				25BAB13C2759380D00A5A18E /* ListingDetailsViewController.swift in Sources */,
+				F92AAB7A275D4DA4005CD28D /* CommentTableViewCell.swift in Sources */,
 				F9DB3BCA27568842006E68AD /* RegisterViewController.swift in Sources */,
 				25EDDEE92754513B00980553 /* ViewController.swift in Sources */,
 				25EDDEE52754513B00980553 /* AppDelegate.swift in Sources */,

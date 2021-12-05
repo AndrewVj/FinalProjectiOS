@@ -24,7 +24,53 @@ struct ListUpdateApiRequestField: Codable {
 }
 
 
-class ListingDetailsViewController: UIViewController {
+// MARK: - Welcome
+struct CommentCreateApiRequest: Codable {
+    let records: [CommentCreateApiRecord]
+}
+
+// MARK: - Record
+struct CommentCreateApiRecord: Codable {
+    let fields: CommentCreateApiFields
+}
+
+// MARK: - Fields
+struct CommentCreateApiFields: Codable {
+    let user: [String]
+    let comment: String
+    let listing: [String]
+}
+
+
+
+
+
+// MARK: - CommentListingApiRequest
+struct CommentListingApiResponse: Codable {
+    let records: [CommentListingApiRecord]
+}
+
+// MARK: - CommentListingApiRecord
+struct CommentListingApiRecord: Codable {
+    let id: String
+    let fields: CommentListingApiField
+    let createdTime: String
+}
+
+// MARK: - CommentListingApiRecord
+struct CommentListingApiField: Codable {
+    let comment: String
+    let nameFromUser: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case comment
+        case nameFromUser = "name (from user)"
+    }
+}
+
+
+
+class ListingDetailsViewController: UIViewController,UITableViewDataSource, UITableViewDelegate{
     var titleText = ""
     var facilitiesText = ""
     var locatonText = ""
@@ -32,22 +78,31 @@ class ListingDetailsViewController: UIViewController {
     var listingId = ""
     var descriptionText = ""
     var favorites = [String]()
+    var comments = [Comment]()
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var facilitiesLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var listingImage: UIImageView!
     @IBOutlet weak var descriptionTextView: UITextView!
-    @IBOutlet var saveButton: UIButton!
-    var isFavorite = true
+    @IBOutlet var commentText: UITextField!
+    @IBOutlet var commentLabel: UILabel!
+    @IBOutlet var tableView: UITableView!
+    
     
     
     var users = [User]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
+
+    var isFavorite = true
+    
+  
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchUser()
+        commentLabel.isHidden = true
         titleLabel.text = titleText
         facilitiesLabel.text = facilitiesText
         locationLabel.text = locatonText
@@ -56,8 +111,110 @@ class ListingDetailsViewController: UIViewController {
             listingImage.image = UIImage(data: newImageData!)
         }
         descriptionTextView.text = descriptionText
+
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        fetchComments()
     }
     
+    func fetchComments(){
+        let semaphore = DispatchSemaphore (value: 0)
+        let url = Constants.apiUrl + "/Comment?filterByFormula=AND(({listing}='"+titleText+"'))"
+        
+        var request = URLRequest(url: URL(string: url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)!,timeoutInterval: Double.infinity)
+        request.addValue(Constants.apiKey, forHTTPHeaderField: "Authorization")
+        request.httpMethod = "GET"
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+          guard let data = data else {
+            print(String(describing: error))
+            semaphore.signal()
+            return
+          }
+            let jsonDecoder = JSONDecoder()
+            do {
+                let apiResponse = try jsonDecoder.decode(CommentListingApiResponse.self,from: data)
+                //No users are found
+                var comments =  [Comment]()
+                for record in apiResponse.records {
+                    let comment = Comment()
+                    comment.comment = record.fields.comment
+                    comment.userName = record.fields.nameFromUser[0]
+                    comment.date = record.createdTime
+                    comments += [comment]
+                    
+                }
+                self.comments = comments
+                print("Comes here")
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+    
+            }catch let jsonError {
+                print(jsonError)
+            }
+          semaphore.signal()
+        }
+        task.resume()
+        semaphore.wait()
+    }
+    
+    
+    
+    @IBAction func didTapAddComment(_ sender: Any) {
+        commentLabel.isHidden = true
+        if commentText.text == "" {
+            commentLabel.text =  "Comment is required"
+            commentLabel.isHidden = false
+            return
+        }
+        let userIds = [users[0].id!]
+
+        let listingIds = [listingId]
+        let url = Constants.apiUrl+"/Comment";
+        
+        let fields = CommentCreateApiFields(user:userIds,comment: commentText.text!,listing:listingIds)
+        let postData = CommentCreateApiRequest(records: [CommentCreateApiRecord(fields: fields)])
+        
+        let semaphore = DispatchSemaphore (value: 0)
+        var request = URLRequest(url: URL(string: url)!,timeoutInterval: Double.infinity)
+        request.addValue(Constants.apiKey, forHTTPHeaderField: "Authorization")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("brw=brwD8OHuk7iMnJBzj", forHTTPHeaderField: "Cookie")
+        request.httpMethod = "POST"
+        guard let uploadData = try? JSONEncoder().encode(postData) else {
+            return
+        }
+        request.httpBody = uploadData
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            
+            if let httpResponse = response as? HTTPURLResponse{
+                if httpResponse.statusCode != 200 {
+                    self.showToast("Image too large . Please select another image")
+                    return
+                }
+            }
+            
+            guard let _ = data else {
+            semaphore.signal()
+            return
+           }
+            DispatchQueue.main.async {
+              let alert = UIAlertController(title: "", message: "Comment created successfully",preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Ok",style: .default, handler: { (action) in
+                    self.fetchComments()
+                }))
+                self.present(alert, animated: true)
+            }
+         
+            
+          semaphore.signal()
+        }
+
+        task.resume()
+        semaphore.wait()
+
+    }
     
     func fetchUser(){
         do{
@@ -70,7 +227,9 @@ class ListingDetailsViewController: UIViewController {
                     }
                 }
                 if isListingSaved {
-                    self.saveButton.setTitle("Remove from saved", for: .normal)
+                    self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "bookmark.fill"), style: .plain, target: self, action: #selector(didTapSaveListing))
+                }else{
+                    self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "bookmark"), style: .plain, target: self, action: #selector(didTapSaveListing))
                 }
             }
      
@@ -80,7 +239,7 @@ class ListingDetailsViewController: UIViewController {
 
     }
     
-    @IBAction func didTapSaveListing(_ sender: Any) {
+    @objc func didTapSaveListing(_ sender: Any) {
         let userId = users[0].id!
         
         var innerFaviorites = self.favorites
@@ -124,21 +283,24 @@ class ListingDetailsViewController: UIViewController {
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
 
             if let httpResponse = response as? HTTPURLResponse{
+                print(httpResponse.statusCode)
                 if httpResponse.statusCode != 200 {
                     print(httpResponse.statusCode)
                     return
                 }
             }
          
+        
            guard let _ = data else {
             semaphore.signal()
             return
            }
             DispatchQueue.main.async {
                 if self.isFavorite {
-                    self.saveButton.setTitle("Remove from saved", for: .normal)
+                    self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "bookmark.fill"), style: .plain, target: self, action: #selector(self.didTapSaveListing))
                 }else{
-                    self.saveButton.setTitle("Save listing", for: .normal)
+                    self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "bookmark"), style: .plain, target: self, action: #selector(self.didTapSaveListing))
+
                 }
             }
             semaphore.signal()
@@ -152,7 +314,24 @@ class ListingDetailsViewController: UIViewController {
         
     }
     
- 
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return comments.count
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell =  tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as! CommentTableViewCell
+        let comment = comments[indexPath.row]
+        cell.commentLabel.text = comment.comment
+        cell.nameLabel.text = comment.userName
+        cell.dateLabel.text = comment.date
+        return cell
+    }
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+    }
   
 }

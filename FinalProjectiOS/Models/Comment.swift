@@ -8,10 +8,8 @@
 import Foundation
 
 class Comment {
-    var user_id: User = User()
     var comment: String = ""
-    var listing_id: String = ""
     var date: String = ""
-    var time: String = ""
+    var userName: String = ""
 }
 
