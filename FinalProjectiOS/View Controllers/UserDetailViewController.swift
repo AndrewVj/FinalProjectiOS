@@ -40,6 +40,7 @@ struct UserDetailsApiFields: Codable {
 class UserDetailViewController: UIViewController {
 
 
+    //Outlet intialzations
     @IBOutlet var nameInput: UITextField!
     
     @IBOutlet var nameLabel: UILabel!
@@ -53,6 +54,7 @@ class UserDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //hide all labels
         emailLabel.isHidden = true
         nameLabel.isHidden = true
         passwordLabel.isHidden = true
@@ -63,6 +65,7 @@ class UserDetailViewController: UIViewController {
     
     @IBAction func didTabUpdateInformation(_ sender: Any) {
         var isValid = true
+        //Validations
         if nameInput.text == "" {
             isValid = false
             nameLabel.text = "Name is required"
@@ -75,6 +78,7 @@ class UserDetailViewController: UIViewController {
         if !isValid {
             return
         }
+        //Make api calls
         let url = Constants.apiUrl+"/User";
 
         var fields = UserDetailsApiFields(name: nameInput.text, email: emailInput.text,password: nil)
@@ -90,7 +94,6 @@ class UserDetailViewController: UIViewController {
         var request = URLRequest(url: URL(string: url)!,timeoutInterval: Double.infinity)
         request.addValue(Constants.apiKey, forHTTPHeaderField: "Authorization")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("brw=brwD8OHuk7iMnJBzj", forHTTPHeaderField: "Cookie")
         request.httpMethod = "PATCH"
         guard let uploadData = try? JSONEncoder().encode(postData) else {
             return
@@ -123,7 +126,7 @@ class UserDetailViewController: UIViewController {
     }
     
     @IBAction func signOutButton(_ sender: UIButton) {
-        
+        //Delete the user from coredata
         let userToRemove = users[0]
         self.context.delete(userToRemove)
         do{

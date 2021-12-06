@@ -51,6 +51,7 @@ class ListingsTableViewController: UITableViewController {
        
     }
     
+    //Fetching the users from db
     func fetchUser(){
         do{
             self.users = try context.fetch(User.fetchRequest())
@@ -58,8 +59,7 @@ class ListingsTableViewController: UITableViewController {
                 let userEmail = users[0].email
                 self.loadDataFromApi(email:userEmail,userId: users[0].id)
             }
-     
-            
+
         }catch {
             
         }
@@ -76,10 +76,8 @@ class ListingsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         if (self.listings.count > 0 ){
-
             let listing = self.listings[indexPath.row]
             let vc = self.storyboard?.instantiateViewController(withIdentifier: "ListingDetailView") as! ListingDetailsViewController
-            
             vc.locatonText = listing.location
             vc.titleText = listing.title
             vc.facilitiesText = listing.facilities
@@ -151,8 +149,8 @@ class ListingsTableViewController: UITableViewController {
                 let apiResponse = try jsonDecoder.decode(AllListingApiResponse.self,from: data)
                 //No users are found
                 var listings =  [Listing]()
-                print(apiResponse.records.count)
                 for record in apiResponse.records {
+        
                     let listing = Listing()
                     listing.image = record.fields.photos
                     listing.location = record.fields.location
@@ -162,6 +160,7 @@ class ListingsTableViewController: UITableViewController {
                     listing.id = record.id
                     listing.favorite = record.fields.favorite
                     
+                    //Check if the listing is in faviorite or not
                     if self.listingType == "saved" {
                         var isFaviorite = false
                         for favorite in record.fields.favorite {

@@ -34,6 +34,8 @@ struct ListingApiRequestFields: Codable {
 
 
 class CreateListingViewController: UIViewController {
+    
+    //Outlet initizations
 
     @IBOutlet weak var titleTextField: UITextField!
     
@@ -57,12 +59,16 @@ class CreateListingViewController: UIViewController {
     @IBOutlet var photoLabel: UILabel!
     @IBOutlet var descriptionLabel: UILabel!
     
+    
+    
+    //For coredata
     var users = [User]()
 
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        //Hide all label
         nameMainLabel.isHidden = true
         locationLabel.isHidden = true
         facilityLabel.isHidden = true
@@ -87,8 +93,10 @@ class CreateListingViewController: UIViewController {
         facilityLabel.isHidden = true
         descriptionLabel.isHidden = true
         photoLabel.isHidden = true
+        
         var isValid = true
         
+        //Fields validations
         if nameInput.text == "" {
             nameMainLabel.text = "Name is required"
             nameMainLabel.isHidden = false
@@ -122,6 +130,7 @@ class CreateListingViewController: UIViewController {
         if users.count == 0 {
             return
         }
+        
         let userIds = [users[0].id!]
         
       
@@ -138,7 +147,6 @@ class CreateListingViewController: UIViewController {
         var request = URLRequest(url: URL(string: url)!,timeoutInterval: Double.infinity)
         request.addValue(Constants.apiKey, forHTTPHeaderField: "Authorization")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("brw=brwD8OHuk7iMnJBzj", forHTTPHeaderField: "Cookie")
         request.httpMethod = "POST"
         guard let uploadData = try? JSONEncoder().encode(postData) else {
             return
@@ -189,11 +197,13 @@ class CreateListingViewController: UIViewController {
 }
 
 extension CreateListingViewController: UIImagePickerControllerDelegate,UINavigationControllerDelegate {
+    //Check for the pick photo
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let key = "UIImagePickerControllerEditedImage"
         if let image = info[UIImagePickerController.InfoKey(rawValue: key)] as? UIImage {
             imageView.image = image
         }
+        //Store the image in the ui view
         picker.dismiss(animated: true)
         
     }

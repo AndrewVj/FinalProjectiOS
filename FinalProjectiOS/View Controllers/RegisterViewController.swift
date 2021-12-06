@@ -11,8 +11,12 @@ class RegisterViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Do any additional setup after loading the view.
+        
+        //Hide the label
+        nameLabel.isHidden = true
+        emailLabel.isHidden = true
+        passwordLabel.isHidden = true
     }
     
     
@@ -26,8 +30,8 @@ class RegisterViewController: UIViewController {
     }
     */
 
+    //Outlet initialization
     @IBOutlet weak var name: UITextField!
-    
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var email: UITextField!
     @IBOutlet var emailLabel: UILabel!
@@ -36,9 +40,12 @@ class RegisterViewController: UIViewController {
     var emailExist = false
     
     @IBAction func didTapRegister(_ sender: UIButton) {
+        //Hide all the labels
         nameLabel.isHidden = true
         emailLabel.isHidden = true
         passwordLabel.isHidden = true
+        
+        
         let emailText = String(email.text!)
         let nameText = String(email.text!)
         let passwordText = String(password.text!)
@@ -122,6 +129,7 @@ class RegisterViewController: UIViewController {
         semaphore.wait()
     }
     
+    //Check if this is valid email or not
     func isValidEmail(_ email: String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
@@ -169,6 +177,7 @@ class RegisterViewController: UIViewController {
     }
     
     
+    //Redirect user to login page for tapping sign in page
     @IBAction func didTabSignIn(_ sender: UIButton) {
         let vc = self.storyboard!.instantiateViewController(withIdentifier: "signInStoryBoard") as! UIViewController
         vc.modalPresentationStyle = .fullScreen

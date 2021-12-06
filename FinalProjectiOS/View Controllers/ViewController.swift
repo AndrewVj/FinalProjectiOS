@@ -32,6 +32,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var emailLabel: UILabel!
     @IBOutlet weak var passwordLabel: UILabel!
     @IBOutlet var  spinner: UIActivityIndicatorView!
+    
     //For data loading
     var users : [User]?
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -43,7 +44,9 @@ class ViewController: UIViewController {
         spinner.hidesWhenStopped = true
     }
     
+    //For users paking us sign up
     @IBAction func didTapSignUp(){
+        //Instantiate view controller and send to register page
         let vc = self.storyboard!.instantiateViewController(withIdentifier: "registerStoryBoard") as! UIViewController
         vc.modalPresentationStyle = .fullScreen
         let navController = UINavigationController(rootViewController:vc)
@@ -52,6 +55,7 @@ class ViewController: UIViewController {
         self.present(navController, animated:true, completion: nil)
     }
    
+    
     @IBAction func handleSignInClick(_ sender: UIButton) {
    
         //Reset the values before validation
@@ -75,26 +79,24 @@ class ViewController: UIViewController {
             return
         }
         
+        //If data is still loading and user clicks sign in again return
         if isDataLoading {
             return
         }
-        let semaphore = DispatchSemaphore (value: 0)
-
+        
         
         let emailText = String(emailAddress.text!)
         let passwordText = String(password.text!)
-
         //Make api call
+        let semaphore = DispatchSemaphore (value: 0)
         let apiUrl = Constants.apiUrl + "/User?filterByFormula=AND(({email}='"+emailText+"'),({password}='"+passwordText+"'))"
-        
- 
         var request = URLRequest(url: URL(string: apiUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)!,timeoutInterval: Double.infinity)
 
         request.addValue(Constants.apiKey, forHTTPHeaderField: "Authorization")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("brw=brwD8OHuk7iMnJBzj", forHTTPHeaderField: "Cookie")
+
+        //Stat animating the activity indicator
         spinner.startAnimating()
-    
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
           guard let data = data else {
             semaphore.signal()
@@ -119,14 +121,14 @@ class ViewController: UIViewController {
                         currentUser.id = apiResponse.records[0].id
 
                         do{
+                            //Store the user to the database
                             try self.context.save()
+                            //Send user to tabbar main
                             let vc = self.storyboard!.instantiateViewController(withIdentifier: "tabbarMain") as! UITabBarController
                             vc.modalPresentationStyle = .fullScreen
                             let navController = UINavigationController(rootViewController:vc) // Creating a navigation controller with VC1 at the root of the navigation stack.
                             navController.modalPresentationStyle = .fullScreen
                             self.present(navController, animated:true, completion: nil)
-
-                            print("Comes here")
                         }catch let error{
                             print("Unexpected error: \(error).")
                         }
@@ -140,7 +142,6 @@ class ViewController: UIViewController {
             }catch let jsonError {
                 print(jsonError)
             }
-          print(String(data: data, encoding: .utf8)!)
           semaphore.signal()
         }
     

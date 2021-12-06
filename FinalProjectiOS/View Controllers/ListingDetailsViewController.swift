@@ -77,9 +77,13 @@ class ListingDetailsViewController: UIViewController,UITableViewDataSource, UITa
     var listingImageText = ""
     var listingId = ""
     var descriptionText = ""
+    
+    //Array for storing faviorites oand comments
     var favorites = [String]()
     var comments = [Comment]()
     
+    
+    //Outlets initializations
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var facilitiesLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
@@ -91,6 +95,7 @@ class ListingDetailsViewController: UIViewController,UITableViewDataSource, UITa
     
     
     
+    //For the coredata
     var users = [User]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
@@ -102,10 +107,14 @@ class ListingDetailsViewController: UIViewController,UITableViewDataSource, UITa
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchUser()
+        
         commentLabel.isHidden = true
+        
+        //Put values on all the label
         titleLabel.text = titleText
         facilitiesLabel.text = facilitiesText
         locationLabel.text = locatonText
+        //Encode the data to base64
         if listingImageText != ""{
             let newImageData = Data.init(base64Encoded: listingImageText, options: .init(rawValue: 0))
             listingImage.image = UIImage(data: newImageData!)
@@ -114,9 +123,11 @@ class ListingDetailsViewController: UIViewController,UITableViewDataSource, UITa
 
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        
         fetchComments()
     }
     
+    //Fetching the comments
     func fetchComments(){
         let semaphore = DispatchSemaphore (value: 0)
         let url = Constants.apiUrl + "/Comment?filterByFormula=AND(({listing}='"+titleText+"'))"
@@ -162,6 +173,12 @@ class ListingDetailsViewController: UIViewController,UITableViewDataSource, UITa
     
     
     @IBAction func didTapAddComment(_ sender: Any) {
+        //Storing the http response code and their values
+        let responseMessages = [200: "OK",
+                                403: "Access forbidden",
+                                404: "File not found",
+                                500: "Internal server error"]
+        
         commentLabel.isHidden = true
         if commentText.text == "" {
             commentLabel.text =  "Comment is required"
@@ -186,10 +203,11 @@ class ListingDetailsViewController: UIViewController,UITableViewDataSource, UITa
             return
         }
         request.httpBody = uploadData
+        
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             
             if let httpResponse = response as? HTTPURLResponse{
-                if httpResponse.statusCode != 200 {
+                if responseMessages[httpResponse.statusCode] != "Ok" {
                     self.showToast("Image too large . Please select another image")
                     return
                 }
@@ -221,11 +239,13 @@ class ListingDetailsViewController: UIViewController,UITableViewDataSource, UITa
             self.users = try context.fetch(User.fetchRequest())
             if self.users.count > 0 {
               var isListingSaved = false
+                //Check if the listing is there or not
                 for favorite in self.favorites {
                     if favorite == self.users[0].id {
                         isListingSaved = true
                     }
                 }
+                
                 if isListingSaved {
                     self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "bookmark.fill"), style: .plain, target: self, action: #selector(didTapSaveListing))
                 }else{
@@ -239,12 +259,16 @@ class ListingDetailsViewController: UIViewController,UITableViewDataSource, UITa
 
     }
     
+    
+    //Remove from saved listing or put it there vice versa
     @objc func didTapSaveListing(_ sender: Any) {
         let userId = users[0].id!
         
         var innerFaviorites = self.favorites
         var removeAt = -1
         var index = 0
+        
+        //Logic to check if listing is on user saved listing or not
         for item in innerFaviorites {
             if item == userId {
                 removeAt = index
@@ -270,7 +294,6 @@ class ListingDetailsViewController: UIViewController,UITableViewDataSource, UITa
         var request = URLRequest(url: URL(string: url)!,timeoutInterval: Double.infinity)
         request.addValue(Constants.apiKey, forHTTPHeaderField: "Authorization")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("brw=brwD8OHuk7iMnJBzj", forHTTPHeaderField: "Cookie")
         request.httpMethod = "PATCH"
      
         guard let uploadData = try? JSONEncoder().encode(postData) else {
