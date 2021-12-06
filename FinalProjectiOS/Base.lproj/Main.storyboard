@@ -699,35 +699,6 @@
             </objects>
             <point key="canvasLocation" x="3715.9420289855075" y="-1074.4565217391305"/>
         </scene>
-        <!--My Listings Table View Controller-->
-        <scene sceneID="BeW-Dy-vOJ">
-            <objects>
-                <tableViewController storyboardIdentifier="MyListingsTableView" id="8kg-8h-icx" customClass="MyListingsTableViewController" customModule="FinalProjectiOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="kEm-uL-eep">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="RGn-7a-lk0">
-                                <rect key="frame" x="0.0" y="44.666666030883789" width="414" height="43.666667938232422"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="RGn-7a-lk0" id="Nws-Li-5Gi">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.666667938232422"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="8kg-8h-icx" id="der-7p-VZX"/>
-                            <outlet property="delegate" destination="8kg-8h-icx" id="EWz-7s-eBG"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" id="Dnx-mW-nxI"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Mj4-yQ-AcC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="4601" y="-2115"/>
-        </scene>
         <!--My Listing View Controller-->
         <scene sceneID="9NH-QG-I5W">
             <objects>

@@ -2,7 +2,7 @@
 //  RegisterViewController.swift
 //  FinalProjectiOS
 //
-//  Created by ashok on 30/11/2021.
+//  Created by Karandeep Singh on 30/11/2021.
 //
 
 import UIKit
@@ -15,7 +15,6 @@ class RegisterViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-
     
     /*
     // MARK: - Navigation
@@ -92,10 +91,10 @@ class RegisterViewController: UIViewController {
         let parameters = "{\n  \"records\": [\n    {\n      \"fields\": {\n        \"name\": \""+nameText+"\",\n        \"email\": \""+emailText+"\",\n        \"password\": \""+passwordText+"\"\n      }\n    }\n  ]\n}"
         let postData = parameters.data(using: .utf8)
 
-        var request = URLRequest(url: URL(string: Constants.apiUrl + "/Users")!,timeoutInterval: Double.infinity)
+        var request = URLRequest(url: URL(string: Constants.apiUrl + "/User")!,timeoutInterval: Double.infinity)
         request.addValue(Constants.apiKey, forHTTPHeaderField: "Authorization")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("brw=brwD8OHuk7iMnJBzj", forHTTPHeaderField: "Cookie")
+       // request.addValue("brw=brwD8OHuk7iMnJBzj", forHTTPHeaderField: "Cookie")
 
         request.httpMethod = "POST"
         request.httpBody = postData

@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  FinalProjectiOS
 //
-//  Created by Andrew Vijay on 29/11/21.
+//  Created by ashok on 29/11/21.
 //
 
 import UIKit
@@ -110,6 +110,7 @@ class ViewController: UIViewController {
                         if (apiResponse.records.count == 0 ){
                             self.passwordLabel.text = "Email or password is incorrect"
                             self.passwordLabel.isHidden = false
+                            return
                         }
                         //Declare the user
                         let currentUser  = User(context: self.context)

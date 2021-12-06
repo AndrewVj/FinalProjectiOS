@@ -2,7 +2,7 @@
 //  UserDetailViewController.swift
 //  FinalProjectiOS
 //
-//  Created by Andrew Vijay on 02/12/21.
+//  Created by Karandeep Singh on 02/12/21.
 //
 
 import UIKit

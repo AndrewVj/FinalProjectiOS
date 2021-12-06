@@ -2,7 +2,7 @@
 //  AllListingsTableViewCell.swift
 //  FinalProjectiOS
 //
-//  Created by Andrew Vijay on 04/12/21.
+//  Created by Andrew Vijay on 02/12/21.
 //
 
 import UIKit
