@@ -47,7 +47,7 @@ class RegisterViewController: UIViewController {
         
         
         let emailText = String(email.text!)
-        let nameText = String(email.text!)
+        let nameText = String(name.text!)
         let passwordText = String(password.text!)
         
         //Check if the fields are valid or not
