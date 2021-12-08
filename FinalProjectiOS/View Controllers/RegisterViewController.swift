@@ -141,7 +141,7 @@ class RegisterViewController: UIViewController {
       
         let semaphore = DispatchSemaphore (value: 0)
 
-        let apiUrl = Constants.apiUrl + "/Users?filterByFormula=AND(({email}='"+email+"'))"
+        let apiUrl = Constants.apiUrl + "/User?filterByFormula=AND(({email}='"+email+"'))"
  
         var request = URLRequest(url: URL(string: apiUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)!,timeoutInterval: Double.infinity)
 

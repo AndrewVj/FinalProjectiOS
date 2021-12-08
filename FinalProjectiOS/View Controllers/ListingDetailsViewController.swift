@@ -120,7 +120,8 @@ class ListingDetailsViewController: UIViewController,UITableViewDataSource, UITa
             listingImage.image = UIImage(data: newImageData!)
         }
         descriptionTextView.text = descriptionText
-
+        descriptionTextView.isScrollEnabled = false
+        
         self.tableView.delegate = self
         self.tableView.dataSource = self
         

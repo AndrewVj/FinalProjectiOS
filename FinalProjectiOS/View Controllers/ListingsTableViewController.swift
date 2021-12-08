@@ -43,6 +43,7 @@ class ListingsTableViewController: UITableViewController {
     var listingType = ""
     
     var listings =  [Listing]()
+    
     override func viewWillAppear(_ animated: Bool) {
         fetchUser()
     }
@@ -50,7 +51,7 @@ class ListingsTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        fetchUser()
     }
     
     //Fetching the users from db
@@ -126,7 +127,7 @@ class ListingsTableViewController: UITableViewController {
         var filterByFormula =  ""
         switch listingType {
            case "main":
-            filterByFormula = "?filterByFormula=AND(({email (from user)}!='"+email+"'))"
+            filterByFormula = ""
            case "my" :
                filterByFormula = "?filterByFormula=AND(({email (from user)}='"+email+"'))"
            case "saved":
