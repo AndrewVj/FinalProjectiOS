@@ -13,13 +13,20 @@ class RootViewController: UIViewController {
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewWillAppear(_ animated: Bool) {
+        
+        print("1\n")
         DispatchQueue.main.async {
+      
             self.fetchUser()
+            print(2)
         }
+        print("2\n")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.fetchUser()
+        
 
         // Do any additional setup after loading the view.
     }

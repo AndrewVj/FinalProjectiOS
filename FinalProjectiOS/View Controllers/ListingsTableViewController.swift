@@ -22,7 +22,7 @@ struct ListingRecord: Codable {
 struct ListingFields: Codable {
     let title, fieldsDescription, facilities, photos: String
     let location: String
-    let user, emailFromUser, nameFromUser,favorite: [String]
+    let user, emailFromUser, nameFromUser,favorite: [String]?
 
     enum CodingKeys: String, CodingKey {
         case title
@@ -43,12 +43,14 @@ class ListingsTableViewController: UITableViewController {
     var listingType = ""
     
     var listings =  [Listing]()
+    override func viewWillAppear(_ animated: Bool) {
+        fetchUser()
+    }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchUser()
-       
+        
     }
     
     //Fetching the users from db
@@ -158,12 +160,12 @@ class ListingsTableViewController: UITableViewController {
                     listing.title = record.fields.title
                     listing.facilities = record.fields.facilities
                     listing.id = record.id
-                    listing.favorite = record.fields.favorite
-                    
+                    listing.favorite = self.getFavioriteListing(faviorites: record.fields.favorite)
                     //Check if the listing is in faviorite or not
                     if self.listingType == "saved" {
                         var isFaviorite = false
-                        for favorite in record.fields.favorite {
+                       
+                        for favorite in listing.favorite {
                             print(favorite,userId)
                             if favorite == userId {
                                 isFaviorite = true
@@ -189,6 +191,15 @@ class ListingsTableViewController: UITableViewController {
         }
         task.resume()
         semaphore.wait()
+    }
+    
+    private func getFavioriteListing(faviorites: [String]?) -> [String]{
+        guard let faviouriteData = faviorites else {
+            return [String]()
+        }
+        
+        return faviouriteData
+
     }
     
 
